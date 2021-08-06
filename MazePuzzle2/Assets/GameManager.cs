@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     private int startY = 0;
     private int xCoord;
     private int yCoord;
+    bool executing = false;
     GridSquare[,] grid;
     // Start is called before the first frame update
     void Start()
@@ -228,10 +229,10 @@ public class GameManager : MonoBehaviour
         GridSquare[] nArray = s.ToArray();
         for (int i = s.Count - 1; i > -1; i--)
         {
-			Instantiate(pathfinder, new Vector3(nArray[i].xValue, nArray[i].yValue, -1), Quaternion.identity);
-            //pathfinder.transform.position = new Vector3(nArray[i].xValue, nArray[i].yValue, -1);
-            yield return null;
+            pathfinder.transform.position = new Vector3(nArray[i].xValue, nArray[i].yValue, -1);
+            yield return new WaitForSeconds(.1f);
         }
+        executing = false;
     }
 
     // Update is called once per frame
@@ -242,8 +243,9 @@ public class GameManager : MonoBehaviour
         yCoord = Mathf.RoundToInt(point.y);
         if (Input.GetMouseButtonDown(0))
         {
-            if (xCoord > -1 && xCoord < x && yCoord > -1 && yCoord < x)
+            if (xCoord > -1 && xCoord < x && yCoord > -1 && yCoord < x && !executing)
             {
+                executing = true;
                 Pathfind(startX, startY, xCoord, yCoord);
                 startX = xCoord;
                 startY = yCoord;
